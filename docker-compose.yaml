@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  database:
+    build: ./Db
+    container_name: mssql-container
+    ports:
+      - "1433:1433"
+    # image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
+    # environment:
+    #   - ACCEPT_EULA=Y
+    #   - MSSQL_SA_PASSWORD=password123!
+  
+  flask-api:
+    build:
+      context: .  # Build context is the current directory
+      dockerfile: Dockerfile  # Use a separate Dockerfile for the API
+    ports:
+      - "5000:5000"  # Map host port 5000 to container port 5000
+    depends_on:
+      - database  # Ensure the database container is started first
+    networks:
+      - my-network
+
+networks:
+  my-network:
